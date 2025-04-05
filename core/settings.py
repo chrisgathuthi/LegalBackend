@@ -23,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-rcpk0@r8j5--b-67diahhh9*p--dv1&d9_&&$ho-%42)g!uzy)'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = config("DEBUG", cast=bool)
 
 ALLOWED_HOSTS = []
 
@@ -55,7 +55,7 @@ ROOT_URLCONF = 'core.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / "templates"],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -80,7 +80,7 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
-
+AUTH_USER_MODEL = 'legalservice.User'
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
@@ -106,7 +106,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Africa/Nairobi'
 
 USE_I18N = True
 
@@ -127,3 +127,38 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 GOOGLE_OAUTH2_CLIENT_ID=config("GOOOLE_OAUTH2_CLIENT_ID")
 GOOGLE_OAUTH2_CLIENT_SECRET=config("GOOOLE_OAUTH2_CLIENT_SECRET")
 GOOGLE_OAUTH2_PROJECT_ID=config("GOOGLE_OAUTH2_PROJECT_ID")
+BASE_BACKEND_URL="https://localhost:8000"
+# CELERY
+CELERY_BROKER_URL = config("CELERY_BROKER", "redis://redis:6379/0")
+CELERY_RESULT_BACKEND = config("CELERY_BROKER", "redis://redis:6379/0")
+# DRF
+REST_FRAMEWORK = {
+    'EXCEPTION_HANDLER': 'utilities.exceptions.custom_exception_handler'
+}
+
+# logging config
+LOGGING = {
+    "version": 1,  # the dictConfig format version
+    "disable_existing_loggers": False,  # retain the default loggers
+    "formatters":{
+        "simple":{
+            "format": "{levelname} {asctime} {module} {lineno:d} {message}",
+            "style": "{"
+        }
+    },
+    "handlers": {
+        "file": {
+            "class": "logging.FileHandler",
+            "filename":  BASE_DIR / f"logs/{config("LOG_FILENAME")}",
+            "level": config("LOG_LEVEL", default="INFO"),
+            "formatter":"simple"
+        },
+    },
+    "loggers": {
+        "": {
+            "handlers": ["file"],
+            "level": "DEBUG",
+        }
+    },
+    
+}
