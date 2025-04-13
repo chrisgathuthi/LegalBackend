@@ -80,7 +80,7 @@ class FirmStaffProfile(models.Model):
     
 class CaseCommon(models.Model):
     """Common attrubutes for all cases"""
-    created_at = models.DateTimeField(auto_created=True)
+    created_at = models.DateTimeField(auto_now=True)
     updated_at = models.DateField(auto_now_add=True)
     case_summary = models.TextField()
     is_closed = models.BooleanField(default=False)

@@ -133,7 +133,10 @@ CELERY_BROKER_URL = config("CELERY_BROKER", "redis://redis:6379/0")
 CELERY_RESULT_BACKEND = config("CELERY_BROKER", "redis://redis:6379/0")
 # DRF
 REST_FRAMEWORK = {
-    'EXCEPTION_HANDLER': 'utilities.exceptions.custom_exception_handler'
+    # 'EXCEPTION_HANDLER': 'utilities.exceptions.custom_exception_handler',
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    )
 }
 
 # logging config
@@ -157,8 +160,11 @@ LOGGING = {
     "loggers": {
         "": {
             "handlers": ["file"],
-            "level": "DEBUG",
+            "level": config("LOG_LEVEL", default="INFO"),
         }
     },
     
 }
+# TOKEN
+JWT_ALGORITHIM="HS256"
+JWT_SECRET=config("JWT_SECRET")
