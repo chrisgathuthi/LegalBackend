@@ -99,4 +99,3 @@ class Emergency(CaseCommon):
         EXTORTION = "EXT", _("Extortion")
 
     emergency_type = models.CharField(max_length=3, choices=EmergencyType)
-

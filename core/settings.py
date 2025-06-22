@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 from pathlib import Path
 from decouple import config
+from datetime import timedelta
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -20,12 +21,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-rcpk0@r8j5--b-67diahhh9*p--dv1&d9_&&$ho-%42)g!uzy)'
+SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config("DEBUG", cast=bool)
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    "192.168.100.9"
+]
 
 
 # Application definition
@@ -37,10 +40,14 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'legalservice.apps.LegalserviceConfig'
+    'corsheaders',
+    'rest_framework',
+    'legalservice.apps.LegalserviceConfig',
+    
 ]
 
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -70,6 +77,10 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'core.wsgi.application'
 
+CORS_ALLOWED_ORIGINS = [
+    "http://127.0.0.1:8081",
+    "http://192.168.100.9:8081",
+]
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
@@ -123,11 +134,7 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# Google
-GOOGLE_OAUTH2_CLIENT_ID=config("GOOOLE_OAUTH2_CLIENT_ID")
-GOOGLE_OAUTH2_CLIENT_SECRET=config("GOOOLE_OAUTH2_CLIENT_SECRET")
-GOOGLE_OAUTH2_PROJECT_ID=config("GOOGLE_OAUTH2_PROJECT_ID")
-BASE_BACKEND_URL="https://localhost:8000"
+
 # CELERY
 CELERY_BROKER_URL = config("CELERY_BROKER", "redis://redis:6379/0")
 CELERY_RESULT_BACKEND = config("CELERY_BROKER", "redis://redis:6379/0")
@@ -135,7 +142,7 @@ CELERY_RESULT_BACKEND = config("CELERY_BROKER", "redis://redis:6379/0")
 REST_FRAMEWORK = {
     # 'EXCEPTION_HANDLER': 'utilities.exceptions.custom_exception_handler',
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
+        # 'rest_framework_simplejwt.authentication.JWTAuthentication',
     )
 }
 
@@ -168,3 +175,12 @@ LOGGING = {
 # TOKEN
 JWT_ALGORITHIM="HS256"
 JWT_SECRET=config("JWT_SECRET")
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(hours=1),
+    "UPDATE_LAST_LOGIN": True,
+    "USER_ID_FIELD": "gid",
+}
+# Django settings
+APPEND_SLASH=False
+
+
