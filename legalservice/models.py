@@ -9,8 +9,9 @@ from django.utils.translation import gettext_lazy as _
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 
-class RefNumber(models.Model):
-    pass
+def generate_ref_number():
+    current_time = time.time()
+    return int(current_time)
 class User(AbstractUser):
 
     """User model"""
@@ -20,7 +21,7 @@ class User(AbstractUser):
         ORGANISATION = "ORG", _("Organisation")
 
     username = None
-    gid = models.UUIDField(default=uuid.uuid4(), unique=True, editable=False)
+    gid = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
     email = models.EmailField(verbose_name="E-mail",unique=True)
     verification_code = models.CharField(verbose_name="otp",max_length=6,unique=True)
     otp_created_at = models.DateTimeField(auto_now=True)
@@ -53,7 +54,6 @@ class OrganisationProfile(models.Model):
     company_name = models.CharField(max_length=100)
     phone_number = PhoneNumberField()
     address = models.TextField()
-    contact_phone = PhoneNumberField()
     contact_email = models.EmailField()
     gid = models.UUIDField(default=uuid.uuid4(), unique=True, editable=False, db_index=True)
 
@@ -86,9 +86,10 @@ class CaseCommon(models.Model):
     is_closed = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
     gid = models.UUIDField(default=uuid.uuid4(), unique=True, editable=False, db_index=True)
-    ref_number = models.CharField(max_length=10, unique=True)
+    ref_number = models.CharField(max_length=10, unique=True, default=generate_ref_number)
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE, null=True)
-    owner = GenericForeignKey('content_type', 'id')
+    object_id = models.PositiveIntegerField(null=True)
+    owner = GenericForeignKey('content_type', 'object_id')
 
     class Meta:
         abstract = True
@@ -99,3 +100,31 @@ class Emergency(CaseCommon):
         EXTORTION = "EXT", _("Extortion")
 
     emergency_type = models.CharField(max_length=3, choices=EmergencyType)
+
+class DraftingAffidavit(CaseCommon):
+    """Drafting affidavit"""
+    pass
+
+class DraftingAgreement(CaseCommon):
+    """Drafting agreement"""
+    pass
+
+class FamilyMatter(CaseCommon):
+    """Family matters"""
+    pass
+
+class LabourLaw(CaseCommon):
+    """Labour laws"""
+    pass
+
+class LandMatter(CaseCommon):
+    """Land matter"""
+    pass
+
+class LegalAdvice(CaseCommon):
+    """Legal advice"""
+    pass
+
+class OtherMatter(CaseCommon):
+    """Other matter"""
+    pass

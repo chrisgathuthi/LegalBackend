@@ -2,12 +2,12 @@ from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from .serializers import CreateUserSerializer, EmergencySerializer
+from .serializers import CreateUserSerializer, CreateDraftingAffidavtiSerializer, CreateFamilyMatterSerializer, CreateDraftingAgreementSerializer, CreateLabourLawSerializer, CreateLandMatterSerializer, CreateLegalAdviceSerializer, CreateOtherMatterSerializer, CreateEmergencySerializer
 from utilities.utils import otp_generator
 from rest_framework.exceptions import APIException
 from django.utils.datastructures import MultiValueDictKeyError
 from utilities.exceptions import LegalServiceException
-from .crud import activate_user_account, validate_otp_code
+from .crud import activate_user_account, validate_otp_code, search_user_profile
 import logging
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication, JWTTokenUserAuthentication
@@ -50,15 +50,37 @@ class ActivateUserView(APIView):
                 validate_otp_code(gid, request.data)
                 user_payload = activate_user_account(gid)
         return Response(data=user_payload)
-    
+
+class UserInformationView(APIView):
+    """Fetch user information"""
+
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        pass
 class EmergencyView(APIView):
     """Create emergency"""
    
     authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
 
     def post(self, request, format=None):
-        serializer = EmergencySerializer(data=request.data)
+        serializer = CreateEmergencySerializer(data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            user_profile = search_user_profile(serializer.validated_data["user_id"],serializer.validated_data["user_type"])
+            serializer.save(owner=user_profile)
+            logger.info("Emergency service created") 
+        return Response(data={"message":"Case submiitted successfully","status":"success","results":serializer.validated_data},status=status.HTTP_201_CREATED)
+    
+class DraftingAffidavitView(APIView):
+
+    """Create draffting affidavit"""
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, format=None):
+        serializer = CreateDraftingAffidavtiSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
             serializer.save()
-            logger.info("Emergency service created")
-        return Response(data={"message":"OK"},status=status.HTTP_201_CREATED)
+            logger.info("Drafting affidavit created")

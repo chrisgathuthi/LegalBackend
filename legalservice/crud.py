@@ -3,6 +3,7 @@ from django.contrib.auth import get_user_model
 from rest_framework.exceptions import APIException
 from rest_framework_simplejwt.tokens import RefreshToken
 import time
+from .models import FirmStaffProfile, OrganisationProfile, IndividualProfile
 
 def validate_otp_code(gid: str, otp_code: int):
     """validate otp code """
@@ -41,3 +42,15 @@ def activate_user_account(gid: str)->dict[str, str]:
             "LastName": user.last_name,
             "UserType": user.user_type
         }
+
+
+def search_user_profile(user_id:str, user_type:str):
+    """search user profile"""
+    
+    user = get_user_model().objects.get(gid=user_id)
+    if user_type == "ORG":
+        return OrganisationProfile.objects.get(user=user)
+    elif user_type == "IND":
+        return IndividualProfile.objects.get(user=user)
+    elif user_type == "INT":
+        return FirmStaffProfile.objects.get(user=user)
