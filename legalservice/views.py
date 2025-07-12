@@ -82,5 +82,111 @@ class DraftingAffidavitView(APIView):
     def post(self, request, format=None):
         serializer = CreateDraftingAffidavtiSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
-            serializer.save()
-            logger.info("Drafting affidavit created")
+            user_profile = search_user_profile(serializer.validated_data["user_id"],serializer.validated_data["user_type"])
+            serializer.save(owner=user_profile)
+            logger.info("Drafting affidavit service created") 
+        return Response(data={"message":"Case submiitted successfully","status":"success","results":serializer.validated_data},status=status.HTTP_201_CREATED)
+
+
+class DraftingAgreementView(APIView):
+
+    """Create draffting affidavit"""
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, format=None):
+        serializer = CreateDraftingAgreementSerializer(data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            user_profile = search_user_profile(serializer.validated_data["user_id"],serializer.validated_data["user_type"])
+            serializer.save(owner=user_profile)
+            logger.info("Drafting agreement service created") 
+        return Response(data={"message":"Case submiitted successfully","status":"success","results":serializer.validated_data},status=status.HTTP_201_CREATED)
+
+
+class FamilyMatterView(APIView):
+
+    """Create draffting affidavit"""
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, format=None):
+        serializer = CreateFamilyMatterSerializer(data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            user_profile = search_user_profile(serializer.validated_data["user_id"],serializer.validated_data["user_type"])
+            serializer.save(owner=user_profile)
+            logger.info("Family service created") 
+        return Response(data={"message":"Case submiitted successfully","status":"success","results":serializer.validated_data},status=status.HTTP_201_CREATED)
+
+
+class LabourLawView(APIView):
+
+    """Create labour laws"""
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, format=None):
+        serializer = CreateLabourLawSerializer(data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            user_profile = search_user_profile(serializer.validated_data["user_id"],serializer.validated_data["user_type"])
+            serializer.save(owner=user_profile)
+            logger.info("Labour law service created") 
+        return Response(data={"message":"Case submiitted successfully","status":"success","results":serializer.validated_data},status=status.HTTP_201_CREATED)
+
+class LandMatterView(APIView):
+
+    """Create draffting affidavit"""
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, format=None):
+        serializer = CreateLandMatterSerializer(data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            user_profile = search_user_profile(serializer.validated_data["user_id"],serializer.validated_data["user_type"])
+            serializer.save(owner=user_profile)
+            logger.info("Emergency service created") 
+        return Response(data={"message":"Case submiitted successfully","status":"success","results":serializer.validated_data},status=status.HTTP_201_CREATED)
+
+
+class LegalAdviceView(APIView):
+
+    """Create draffting affidavit"""
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, format=None):
+        serializer = CreateLegalAdviceSerializer(data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            user_profile = search_user_profile(serializer.validated_data["user_id"],serializer.validated_data["user_type"])
+            serializer.save(owner=user_profile)
+            logger.info("Emergency service created") 
+        return Response(data={"message":"Case submiitted successfully","status":"success","results":serializer.validated_data},status=status.HTTP_201_CREATED)
+
+
+class OtherMatterView(APIView):
+
+    """Create draffting affidavit"""
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, format=None):
+        serializer = CreateOtherMatterSerializer(data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            user_profile = search_user_profile(serializer.validated_data["user_id"],serializer.validated_data["user_type"])
+            serializer.save(owner=user_profile)
+            logger.info("Other matter service created") 
+        return Response(data={"message":"Case submiitted successfully","status":"success","results":serializer.validated_data},status=status.HTTP_201_CREATED)
+
+
+class OtherMatterView(APIView):
+
+    """Create draffting affidavit"""
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, format=None):
+        serializer = CreateOtherMatterSerializer(data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            user_profile = search_user_profile(serializer.validated_data["user_id"],serializer.validated_data["user_type"])
+            serializer.save(owner=user_profile)
+            logger.info("Other matter service created") 
+        return Response(data={"message":"Case submiitted successfully","status":"success","results":serializer.validated_data},status=status.HTTP_201_CREATED)

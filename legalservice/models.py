@@ -74,9 +74,8 @@ class IndividualProfile(models.Model):
 
 class FirmStaffProfile(models.Model):
     """staff profile"""
-    gid = models.UUIDField(default=uuid.uuid4(), unique=True, editable=False)
+    gid = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='legal_staff_profile')
-    bar_association_number = models.CharField(max_length=100, unique=True)
     
 class CaseCommon(models.Model):
     """Common attrubutes for all cases"""
@@ -85,7 +84,7 @@ class CaseCommon(models.Model):
     case_summary = models.TextField()
     is_closed = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
-    gid = models.UUIDField(default=uuid.uuid4(), unique=True, editable=False, db_index=True)
+    gid = models.UUIDField(default=uuid.uuid4, unique=True, editable=False, db_index=True)
     ref_number = models.CharField(max_length=10, unique=True, default=generate_ref_number)
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE, null=True)
     object_id = models.PositiveIntegerField(null=True)
