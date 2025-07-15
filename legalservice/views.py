@@ -2,7 +2,7 @@ from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from .serializers import CreateUserSerializer, CreateDraftingAffidavtiSerializer, CreateFamilyMatterSerializer, CreateDraftingAgreementSerializer, CreateLabourLawSerializer, CreateLandMatterSerializer, CreateLegalAdviceSerializer, CreateOtherMatterSerializer, CreateEmergencySerializer
+from .serializers import CreateUserSerializer, CreateDraftingAffidavtiSerializer, CreateFamilyMatterSerializer, CreateDraftingAgreementSerializer, CreateLabourLawSerializer, CreateLandMatterSerializer, CreateLegalAdviceSerializer, CreateOtherMatterSerializer, CreateEmergencySerializer, IndividualProfileSerializer, FirmProfileSerializer, OrgProfileSerializer
 from utilities.utils import otp_generator
 from rest_framework.exceptions import APIException
 from django.utils.datastructures import MultiValueDictKeyError
@@ -11,6 +11,8 @@ from .crud import activate_user_account, validate_otp_code, search_user_profile
 import logging
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication, JWTTokenUserAuthentication
+from django.contrib.auth import get_user_model
+from django.http import Http404
 
 logger = logging.getLogger(__name__)
 class CreateUserView(APIView):
@@ -190,3 +192,18 @@ class OtherMatterView(APIView):
             serializer.save(owner=user_profile)
             logger.info("Other matter service created") 
         return Response(data={"message":"Case submiitted successfully","status":"success","results":serializer.validated_data},status=status.HTTP_201_CREATED)
+
+class UserInformationView(APIView):
+    """Get user information"""
+
+    def get(self, request, user_id:str):
+        try:
+            user = get_user_model().objects.get(gid=user_id)
+        except get_user_model().DoesNotExist:
+            raise Http404("No profile match")       
+        # check serializer method
+        if user.user_type == "ORG":
+            serializer = OrgProfileSerializer(user)
+            return Response(serializer.data, status=status.http_)
+            
+        return Response(data={""})

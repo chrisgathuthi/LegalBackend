@@ -71,7 +71,10 @@ class IndividualProfile(models.Model):
     identification_number = models.CharField(max_length=15)
     gid = models.UUIDField(default=uuid.uuid4(), unique=True, editable=False, db_index=True)
 
-
+class CaseTray(models.Model):
+    """Tray to hold incoming cases"""
+    created_at = models.DateTimeField(auto_now=True)
+    acknowledged = models.BooleanField(default=False)
 class FirmStaffProfile(models.Model):
     """staff profile"""
     gid = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
@@ -79,6 +82,7 @@ class FirmStaffProfile(models.Model):
     
 class CaseCommon(models.Model):
     """Common attrubutes for all cases"""
+    tray = models.ForeignKey(to=CaseTray,on_delete=models.CASCADE, related_name="inbox", null=True)
     created_at = models.DateTimeField(auto_now=True)
     updated_at = models.DateField(auto_now_add=True)
     case_summary = models.TextField()
