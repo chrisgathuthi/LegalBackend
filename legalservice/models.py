@@ -73,6 +73,7 @@ class IndividualProfile(models.Model):
 
 class CaseTray(models.Model):
     """Tray to hold incoming cases"""
+    name = models.CharField(max_length=10, null=True)
     created_at = models.DateTimeField(auto_now=True)
     acknowledged = models.BooleanField(default=False)
 class FirmStaffProfile(models.Model):
@@ -82,7 +83,7 @@ class FirmStaffProfile(models.Model):
     
 class CaseCommon(models.Model):
     """Common attrubutes for all cases"""
-    tray = models.ForeignKey(to=CaseTray,on_delete=models.CASCADE, related_name="inbox", null=True)
+    tray = models.ForeignKey(to=CaseTray,on_delete=models.CASCADE, null=True)
     created_at = models.DateTimeField(auto_now=True)
     updated_at = models.DateField(auto_now_add=True)
     case_summary = models.TextField()

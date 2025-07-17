@@ -12,7 +12,7 @@ from .models import (
     OtherMatter,
 )
 from django.contrib.auth import get_user_model
-
+from legalservice.tasks import add_case_to_tray
 
 class CreateUserSerializer(serializers.ModelSerializer):
     user_type = serializers.CharField(required=True)
@@ -140,7 +140,9 @@ class CreateEmergencySerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         validated_data.pop("user_id")
         validated_data.pop("user_type")
-        return super().create(validated_data)
+        emergency = super().create(validated_data)
+        add_case_to_tray.delay(emergency.gid,"Emergency")
+        return emergency
 
 
 class CreateDraftingAffidavtiSerializer(serializers.ModelSerializer):
@@ -172,7 +174,9 @@ class CreateDraftingAffidavtiSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         validated_data.pop("user_id")
         validated_data.pop("user_type")
-        return super().create(validated_data)
+        affidavit =  super().create(validated_data)
+        add_case_to_tray(affidavit.gid, "DraftingAffidavit")
+        return affidavit
 
 
 class CreateDraftingAgreementSerializer(serializers.ModelSerializer):
@@ -204,7 +208,9 @@ class CreateDraftingAgreementSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         validated_data.pop("user_id")
         validated_data.pop("user_type")
-        return super().create(validated_data)
+        agreement =  super().create(validated_data)
+        add_case_to_tray(agreement.gid, "DraftingAgreement")
+        return agreement
 
 
 class CreateFamilyMatterSerializer(serializers.ModelSerializer):
@@ -236,7 +242,9 @@ class CreateFamilyMatterSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         validated_data.pop("user_id")
         validated_data.pop("user_type")
-        return super().create(validated_data)
+        family =  super().create(validated_data)
+        add_case_to_tray(family.gid, "FamilyMatter")
+        return family
 
 
 class CreateLabourLawSerializer(serializers.ModelSerializer):
@@ -268,7 +276,9 @@ class CreateLabourLawSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         validated_data.pop("user_id")
         validated_data.pop("user_type")
-        return super().create(validated_data)
+        labour =  super().create(validated_data)
+        add_case_to_tray(labour.gid, "LabourLaw")
+        return labour
 
 
 class CreateLandMatterSerializer(serializers.ModelSerializer):
@@ -300,7 +310,9 @@ class CreateLandMatterSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         validated_data.pop("user_id")
         validated_data.pop("user_type")
-        return super().create(validated_data)
+        land =  super().create(validated_data)
+        add_case_to_tray(land.gid, "LandMatter")
+        return land
 
 
 class CreateLegalAdviceSerializer(serializers.ModelSerializer):
@@ -332,7 +344,9 @@ class CreateLegalAdviceSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         validated_data.pop("user_id")
         validated_data.pop("user_type")
-        return super().create(validated_data)
+        legal =  super().create(validated_data)
+        add_case_to_tray(legal.gid, "LegalAdvice")
+        return legal
 
 
 class CreateOtherMatterSerializer(serializers.ModelSerializer):
@@ -364,4 +378,6 @@ class CreateOtherMatterSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         validated_data.pop("user_id")
         validated_data.pop("user_type")
-        return super().create(validated_data)
+        othermatter =  super().create(validated_data)
+        add_case_to_tray(othermatter.gid, "OtherMatter")
+        return othermatter

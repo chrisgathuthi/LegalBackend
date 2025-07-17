@@ -138,8 +138,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 # CELERY
-CELERY_BROKER_URL = config("CELERY_BROKER", "redis://redis:6379/0")
-CELERY_RESULT_BACKEND = config("CELERY_BROKER", "redis://redis:6379/0")
+CELERY_BROKER_URL = config("CELERY_BROKER_URL", "redis://redis:6379/0")
+CELERY_RESULT_BACKEND = config("CELERY_RESULT_BACKEND", "redis://redis:6379/0")
 # DRF
 REST_FRAMEWORK = {
     # 'EXCEPTION_HANDLER': 'utilities.exceptions.custom_exception_handler',
@@ -184,5 +184,4 @@ SIMPLE_JWT = {
 }
 # Django settings
 APPEND_SLASH=False
-
 
