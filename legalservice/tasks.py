@@ -17,7 +17,7 @@ def add_case_to_tray(case_id: str, case_model: str) -> None:
     """Add incoming cases to tray"""
 
     case = CaseTray.objects.get(name="inbox")
-    match case_model.capitalize():
+    match case_model:
         case "Emergency":
             emergency = Emergency.objects.get(gid=case_id)
             case.emergency_set.add(emergency)

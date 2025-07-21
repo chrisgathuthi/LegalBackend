@@ -3,7 +3,8 @@ from django.contrib.auth import get_user_model
 from rest_framework.exceptions import APIException
 from rest_framework_simplejwt.tokens import RefreshToken
 import time
-from .models import FirmStaffProfile, OrganisationProfile, IndividualProfile
+from .models import CaseTray, FirmStaffProfile, OrganisationProfile, IndividualProfile
+from . import serializers
 
 def validate_otp_code(gid: str, otp_code: int):
     """validate otp code """
@@ -54,3 +55,26 @@ def search_user_profile(user_id:str, user_type:str):
         return IndividualProfile.objects.get(user=user)
     elif user_type == "INT":
         return FirmStaffProfile.objects.get(user=user)
+    
+
+def get_admin_inbox():
+    tray =  CaseTray.objects.get(name="inbox")
+    emergency = tray.emergency_set.all()
+    affidavit = tray.draftingaffidavit_set.all()
+    agreement = tray.draftingagreement_set.all()
+    family = tray.familymatter_set.all()
+    labour = tray.labourlaw_set.all()
+    land = tray.landmatter_set.all()
+    legal = tray.legaladvice_set.all()
+    other = tray.othermatter_set.all()
+    reads = serializers.ReadEmergencySerializer(emergency,many=True)
+    return {
+        "Emergency": reads.data,
+        "DraftingAffidavit":affidavit.values(),
+        "DraftingAgreement":agreement.values(),
+        "FamilyMatters":family.values(),
+        "LabourLaws":labour.values(),
+        "LandMatters":land.values(),
+        "LegalAdvice":legal.values(),
+        "OtherMatters":other.values()
+    }

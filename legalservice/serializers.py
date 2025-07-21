@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from django.contrib.auth.hashers import make_password
 from .models import (
+    CaseTray,
     User,
     Emergency,
     DraftingAffidavit,
@@ -81,10 +82,10 @@ class OrgProfileSerializer(serializers.ModelSerializer):
 class IndividualProfileSerializer(serializers.ModelSerializer):
     """Fetch user information"""
 
-    identification_type = serializers.CharField(source="organisationprofile.identification_type")
-    phone_number = serializers.CharField(source="organisationprofile.phone_number")
-    address = serializers.CharField(source="organisationprofile.address")
-    identification_number = serializers.CharField(source="organisationprofile.identification_number")
+    identification_type = serializers.CharField(source="individual_profile.identification_type")
+    phone_number = serializers.CharField(source="individual_profile.phone_number")
+    address = serializers.CharField(source="individual_profile.address")
+    identification_number = serializers.CharField(source="individual_profile.identification_number")
 
     class Meta:
         model = User
@@ -381,3 +382,26 @@ class CreateOtherMatterSerializer(serializers.ModelSerializer):
         othermatter =  super().create(validated_data)
         add_case_to_tray(othermatter.gid, "OtherMatter")
         return othermatter
+
+class AdminInboxSerializer(serializers.ModelSerializer):
+    """Admin inbox serializer"""
+    class Meta:
+        model = CaseTray
+        fields = "__all__"
+
+# READS
+# class BaseUserSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = User
+#         fields = ['id', 'username', 'email']
+
+# class ExtendedUserSerializer(BaseUserSerializer):
+#     class Meta(BaseUserSerializer.Meta):
+#         fields = BaseUserSerializer.Meta.fields + ['date_joined']
+
+class ReadEmergencySerializer(serializers.ModelSerializer):
+    """Read emergency"""
+    class Meta:
+        model = Emergency
+        fields = "__all__"
+        exclude = ["id","tray","content_type","gid"]

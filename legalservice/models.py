@@ -69,7 +69,7 @@ class IndividualProfile(models.Model):
     address = models.TextField()
     identification_type = models.CharField(max_length=15, choices=IdentificationDocument)
     identification_number = models.CharField(max_length=15)
-    gid = models.UUIDField(default=uuid.uuid4(), unique=True, editable=False, db_index=True)
+    gid = models.UUIDField(default=uuid.uuid4, unique=True, editable=False, db_index=True)
 
 class CaseTray(models.Model):
     """Tray to hold incoming cases"""

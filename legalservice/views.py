@@ -2,12 +2,12 @@ from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from .serializers import CreateUserSerializer, CreateDraftingAffidavtiSerializer, CreateFamilyMatterSerializer, CreateDraftingAgreementSerializer, CreateLabourLawSerializer, CreateLandMatterSerializer, CreateLegalAdviceSerializer, CreateOtherMatterSerializer, CreateEmergencySerializer, IndividualProfileSerializer, FirmProfileSerializer, OrgProfileSerializer
+from .serializers import AdminInboxSerializer, CreateUserSerializer, CreateDraftingAffidavtiSerializer, CreateFamilyMatterSerializer, CreateDraftingAgreementSerializer, CreateLabourLawSerializer, CreateLandMatterSerializer, CreateLegalAdviceSerializer, CreateOtherMatterSerializer, CreateEmergencySerializer, IndividualProfileSerializer, FirmProfileSerializer, OrgProfileSerializer
 from utilities.utils import otp_generator
-from rest_framework.exceptions import APIException
+from rest_framework.exceptions import APIException, NotFound
 from django.utils.datastructures import MultiValueDictKeyError
 from utilities.exceptions import LegalServiceException
-from .crud import activate_user_account, validate_otp_code, search_user_profile
+from .crud import activate_user_account, get_admin_inbox, validate_otp_code, search_user_profile
 import logging
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication, JWTTokenUserAuthentication
@@ -53,14 +53,6 @@ class ActivateUserView(APIView):
                 user_payload = activate_user_account(gid)
         return Response(data=user_payload)
 
-class UserInformationView(APIView):
-    """Fetch user information"""
-
-    authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticated]
-
-    def get(self, request):
-        pass
 class EmergencyView(APIView):
     """Create emergency"""
    
@@ -196,14 +188,30 @@ class OtherMatterView(APIView):
 class UserInformationView(APIView):
     """Get user information"""
 
-    def get(self, request, user_id:str):
+    def get(self, request, gid:str):
         try:
-            user = get_user_model().objects.get(gid=user_id)
+            user = get_user_model().objects.get(gid=gid)
         except get_user_model().DoesNotExist:
             raise Http404("No profile match")       
         # check serializer method
         if user.user_type == "ORG":
             serializer = OrgProfileSerializer(user)
-            return Response(serializer.data, status=status.http_)
-            
-        return Response(data={""})
+            return Response(data={"UserInformation":serializer.data}, status=status.HTTP_200_OK)
+        elif user.user_type == "INT":
+            serializer = FirmProfileSerializer(user)
+            return Response(data={"UserInformation":serializer.data}, status=status.HTTP_200_OK)    
+        elif user.user_type == "IND":
+            serializer = IndividualProfileSerializer(user)
+            return Response(data={"UserInformation":serializer.data})
+        else:
+            raise NotFound(detail="User not found", code="user_not_found")
+        
+# ADMIN
+class AdminInboxView(APIView):
+
+    """feth inbox cases"""
+
+    def get(self, request):
+        inbox=get_admin_inbox()
+        # serializer = AdminInboxSerializer(inbox)
+        return Response(data={"Inbox":inbox})

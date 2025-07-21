@@ -19,5 +19,6 @@ urlpatterns = [
     path("legal-advice/",views.LegalAdviceView.as_view(),name="legal-advice"),
     path("land-matters/",views.LandMatterView.as_view(),name="land-matters"),
     path("other-matters/",views.OtherMatterView.as_view(),name="other-matters"),
-    path("profiles/<str:user_id>/",views.UserInformationView.as_view(),name="user-profile"),
+    path("profiles/<str:gid>/me/",views.UserInformationView.as_view(),name="user-profile"),
+    path("cases/",views.AdminInboxView.as_view(),name="admin-inbox")
 ]
