@@ -67,14 +67,21 @@ def get_admin_inbox():
     land = tray.landmatter_set.all()
     legal = tray.legaladvice_set.all()
     other = tray.othermatter_set.all()
-    reads = serializers.ReadEmergencySerializer(emergency,many=True)
+    emergencies = serializers.EmergencyReadSerializer(emergency,many=True)
+    affidavits = serializers.DraftingAffidavitReadSerializer(affidavit, many=True)
+    families = serializers.FamilyMatterReadSerializer(family,many=True)
+    agreements = serializers.DraftingAgreementReadSerializer(agreement, many=True)
+    labours = serializers.LabourLawReadSerializer(labour,many=True)
+    lands = serializers.LandLawReadSerializer(land,many=True)
+    legals = serializers.LegalAdviceReadSerializer(legal, many=True)
+    others = serializers.OtherMatterReadSerializer(other, many=True)
     return {
-        "Emergency": reads.data,
-        "DraftingAffidavit":affidavit.values(),
-        "DraftingAgreement":agreement.values(),
-        "FamilyMatters":family.values(),
-        "LabourLaws":labour.values(),
-        "LandMatters":land.values(),
-        "LegalAdvice":legal.values(),
-        "OtherMatters":other.values()
+        "Emergency":emergencies.data,
+        "DraftingAffidavit":affidavits.data,
+        "DraftingAgreement":agreements.data,
+        "FamilyMatters":families.data,
+        "LabourLaws":labours.data,
+        "LandMatters":lands.data,
+        "LegalAdvice":legals.data,
+        "OtherMatters":others.data
     }

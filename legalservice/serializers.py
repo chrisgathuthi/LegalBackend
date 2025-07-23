@@ -390,18 +390,51 @@ class AdminInboxSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 # READS
-# class BaseUserSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = User
-#         fields = ['id', 'username', 'email']
-
-# class ExtendedUserSerializer(BaseUserSerializer):
-#     class Meta(BaseUserSerializer.Meta):
-#         fields = BaseUserSerializer.Meta.fields + ['date_joined']
-
-class ReadEmergencySerializer(serializers.ModelSerializer):
+class EmergencyReadSerializer(serializers.ModelSerializer):
     """Read emergency"""
     class Meta:
         model = Emergency
-        fields = "__all__"
-        exclude = ["id","tray","content_type","gid"]
+        exclude = ["id","tray","content_type"]
+
+class DraftingAffidavitReadSerializer(serializers.ModelSerializer):
+    """Read drafting affidavit"""
+    class Meta:
+        model = DraftingAffidavit
+        exclude = ["id","tray","content_type","object_id"]
+
+class DraftingAgreementReadSerializer(serializers.ModelSerializer):
+    """Read drafting agreement"""
+    class Meta:
+        model = DraftingAgreement
+        exclude = ["id","tray","content_type","object_id"]
+
+class FamilyMatterReadSerializer(serializers.ModelSerializer):
+    """Read drafting affidavit"""
+    class Meta:
+        model = FamilyMatter
+        exclude = ["id","tray","content_type","object_id"]
+
+class LabourLawReadSerializer(serializers.ModelSerializer):
+    """Read labour law"""
+    class Meta:
+        model = LabourLaw
+        exclude = ["id","tray","content_type","object_id"]
+
+class LandLawReadSerializer(serializers.ModelSerializer):
+    """Read drafting affidavit"""
+    class Meta:
+        model = LandMatter
+        exclude = ["id","tray","content_type","object_id"]
+
+
+class LegalAdviceReadSerializer(serializers.ModelSerializer):
+    """Read legal advice"""
+    class Meta:
+        model = LegalAdvice
+        exclude = ["id","tray","content_type","object_id"]
+
+class OtherMatterReadSerializer(serializers.ModelSerializer):
+    """Read drafting affidavit"""
+    class Meta:
+        model = OtherMatter
+        exclude = ["id","tray","content_type","object_id"]
