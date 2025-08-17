@@ -181,6 +181,7 @@ SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(hours=1),
     "UPDATE_LAST_LOGIN": True,
     "USER_ID_FIELD": "gid",
+    "TOKEN_OBTAIN_SERIALIZER":"legalservice.serializers.LegalTokenObtainPairSerializer"
 }
 # Django settings
 APPEND_SLASH=False

@@ -14,6 +14,16 @@ from .models import (
 )
 from django.contrib.auth import get_user_model
 from legalservice.tasks import add_case_to_tray
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+class LegalTokenObtainPairSerializer(TokenObtainPairSerializer):
+
+    """Add user id & user type"""
+    @classmethod
+    def get_token(cls, user):
+        token = super().get_token(user)
+        token['user_id'] = str(user.gid)
+        token['user_type'] = user.user_type
+        return token
 
 class CreateUserSerializer(serializers.ModelSerializer):
     user_type = serializers.CharField(required=True)
@@ -394,7 +404,7 @@ class EmergencyReadSerializer(serializers.ModelSerializer):
     """Read emergency"""
     class Meta:
         model = Emergency
-        exclude = ["id","tray","content_type"]
+        exclude = ["id","tray","content_type","object_id"]
 
 class DraftingAffidavitReadSerializer(serializers.ModelSerializer):
     """Read drafting affidavit"""

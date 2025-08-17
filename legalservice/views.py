@@ -2,9 +2,9 @@ from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from .serializers import AdminInboxSerializer, CreateUserSerializer, CreateDraftingAffidavtiSerializer, CreateFamilyMatterSerializer, CreateDraftingAgreementSerializer, CreateLabourLawSerializer, CreateLandMatterSerializer, CreateLegalAdviceSerializer, CreateOtherMatterSerializer, CreateEmergencySerializer, IndividualProfileSerializer, FirmProfileSerializer, OrgProfileSerializer
+from .serializers import LegalTokenObtainPairSerializer, CreateUserSerializer, CreateDraftingAffidavtiSerializer, CreateFamilyMatterSerializer, CreateDraftingAgreementSerializer, CreateLabourLawSerializer, CreateLandMatterSerializer, CreateLegalAdviceSerializer, CreateOtherMatterSerializer, CreateEmergencySerializer, IndividualProfileSerializer, FirmProfileSerializer, OrgProfileSerializer
 from utilities.utils import otp_generator
-from rest_framework.exceptions import APIException, NotFound
+from rest_framework.exceptions import NotFound
 from django.utils.datastructures import MultiValueDictKeyError
 from utilities.exceptions import LegalServiceException
 from .crud import activate_user_account, get_admin_inbox, validate_otp_code, search_user_profile
@@ -13,8 +13,14 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication, JWTTokenUserAuthentication
 from django.contrib.auth import get_user_model
 from django.http import Http404
+from rest_framework_simplejwt.views import TokenObtainPairView
 
 logger = logging.getLogger(__name__)
+
+class LegalTokenObtainPairView(TokenObtainPairView):
+
+    """Override default token view"""
+    serializer_class = LegalTokenObtainPairSerializer
 class CreateUserView(APIView):
 
     permission_classes = []
