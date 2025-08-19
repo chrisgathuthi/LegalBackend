@@ -14,8 +14,11 @@ from .models import (
 )
 from django.contrib.auth import get_user_model
 from legalservice.tasks import add_case_to_tray
-from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-class LegalTokenObtainPairSerializer(TokenObtainPairSerializer):
+from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer, TokenRefreshSerializer
+from rest_framework_simplejwt.tokens import RefreshToken
+
+class LegalRefreshTokenSerializer(TokenRefreshSerializer):
 
     """Add user id & user type"""
     @classmethod
@@ -24,6 +27,31 @@ class LegalTokenObtainPairSerializer(TokenObtainPairSerializer):
         token['user_id'] = str(user.gid)
         token['user_type'] = user.user_type
         return token
+    
+    def validate(self, attrs):
+        data = super().validate(attrs)
+        refresh = RefreshToken(attrs["refresh"])
+        data["user_id"] = str(refresh["user_id"])
+        data["user_type"] = str(refresh["user_type"])
+        data["access"] = str(refresh.access_token)
+        return data
+
+class LegalAccessTokenObtainPairSerializer(TokenObtainPairSerializer):
+    @classmethod
+    def get_token(cls, user):
+        token = super().get_token(user)
+
+        # Add custom claims
+        token['user_type'] = user.user_type
+        token['user_id'] = str(user.gid)
+        return token
+    
+    def validate(self, attrs):
+        data = super().validate(attrs)
+        data["user_type"] = self.user.user_type
+        data["user_id"] = str(self.user.gid)
+        return data
+
 
 class CreateUserSerializer(serializers.ModelSerializer):
     user_type = serializers.CharField(required=True)

@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'rest_framework',
     'legalservice.apps.LegalserviceConfig',
+    'rest_framework_simplejwt'
     
 ]
 
@@ -181,7 +182,7 @@ SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(hours=1),
     "UPDATE_LAST_LOGIN": True,
     "USER_ID_FIELD": "gid",
-    "TOKEN_OBTAIN_SERIALIZER":"legalservice.serializers.LegalTokenObtainPairSerializer"
+    "TOKEN_OBTAIN_SERIALIZER":"legalservice.serializers.LegalAccessTokenObtainPairSerializer"
 }
 # Django settings
 APPEND_SLASH=False

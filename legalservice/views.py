@@ -2,7 +2,7 @@ from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from .serializers import LegalTokenObtainPairSerializer, CreateUserSerializer, CreateDraftingAffidavtiSerializer, CreateFamilyMatterSerializer, CreateDraftingAgreementSerializer, CreateLabourLawSerializer, CreateLandMatterSerializer, CreateLegalAdviceSerializer, CreateOtherMatterSerializer, CreateEmergencySerializer, IndividualProfileSerializer, FirmProfileSerializer, OrgProfileSerializer
+from .serializers import LegalRefreshTokenSerializer,LegalAccessTokenObtainPairSerializer, CreateUserSerializer, CreateDraftingAffidavtiSerializer, CreateFamilyMatterSerializer, CreateDraftingAgreementSerializer, CreateLabourLawSerializer, CreateLandMatterSerializer, CreateLegalAdviceSerializer, CreateOtherMatterSerializer, CreateEmergencySerializer, IndividualProfileSerializer, FirmProfileSerializer, OrgProfileSerializer
 from utilities.utils import otp_generator
 from rest_framework.exceptions import NotFound
 from django.utils.datastructures import MultiValueDictKeyError
@@ -10,17 +10,27 @@ from utilities.exceptions import LegalServiceException
 from .crud import activate_user_account, get_admin_inbox, validate_otp_code, search_user_profile
 import logging
 from rest_framework.permissions import IsAuthenticated
-from rest_framework_simplejwt.authentication import JWTAuthentication, JWTTokenUserAuthentication
+from rest_framework_simplejwt.authentication import JWTAuthentication
 from django.contrib.auth import get_user_model
 from django.http import Http404
-from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 logger = logging.getLogger(__name__)
 
-class LegalTokenObtainPairView(TokenObtainPairView):
+class LegalRefreshTokenObtainPairView(TokenRefreshView):
+
+    """Override default refresh token view"""
+    permission_classes = []
+    authentication_classes = []
+    serializer_class = LegalRefreshTokenSerializer
+
+class LegalAccessTokenObtainPairView(TokenObtainPairView):
 
     """Override default token view"""
-    serializer_class = LegalTokenObtainPairSerializer
+    permission_classes = []
+    authentication_classes = []
+
+    serializer_class = LegalAccessTokenObtainPairSerializer
 class CreateUserView(APIView):
 
     permission_classes = []
